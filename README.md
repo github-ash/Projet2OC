@@ -66,7 +66,7 @@ Voir [ARCHITECTURE.md](ARCHITECTURE.md) pour les responsabilités des composants
 
 ## Captures
 
-Les captures desktop du tableau de bord et du détail Italie sont disponibles dans `captures-ui/` et regroupées dans `captures-ui.zip`.
+Les captures desktop (`dashboard.png`, `country-detail.png`) et mobile (`dashboard-mobile.jpg`, `country-detail-mobile.jpg`) sont disponibles dans `captures-ui/` et regroupées dans `captures-ui.zip`.
 
 ## Vérifications
 
