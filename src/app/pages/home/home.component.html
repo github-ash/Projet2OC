@@ -1,0 +1,12 @@
+<main>
+  <h1>Olympic games app</h1>
+  <hr />
+  <div class="center"><div>{{ titlePage }}</div></div>
+  <p class="error" *ngIf="error" role="alert">Unable to load Olympic data: {{ error }}</p>
+  <app-statistics-summary [statistics]="statistics"></app-statistics-summary>
+  <app-medal-pie-chart
+    [countries]="countries"
+    [medalTotals]="medalTotals"
+    (countrySelected)="openCountry($event)"
+  ></app-medal-pie-chart>
+</main>

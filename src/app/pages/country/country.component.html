@@ -1,0 +1,7 @@
+<main>
+  <div class="center"><div>{{ titlePage }}</div></div>
+  <p class="error" *ngIf="error" role="alert">Unable to load country data: {{ error }}</p>
+  <app-statistics-summary [statistics]="statistics"></app-statistics-summary>
+  <app-country-medal-chart [years]="years" [medalTotals]="medalTotals"></app-country-medal-chart>
+  <div class="center"><a routerLink="">Go back</a></div>
+</main>
