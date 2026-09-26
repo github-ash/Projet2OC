@@ -1,12 +1,35 @@
-<main>
-  <h1>Olympic games app</h1>
-  <hr />
-  <div class="center"><div>{{ titlePage }}</div></div>
-  <p class="error" *ngIf="error" role="alert">Unable to load Olympic data: {{ error }}</p>
-  <app-statistics-summary [statistics]="statistics"></app-statistics-summary>
-  <app-medal-pie-chart
-    [countries]="countries"
-    [medalTotals]="medalTotals"
-    (countrySelected)="openCountry($event)"
-  ></app-medal-pie-chart>
+<main class="page-shell">
+  <app-header
+    [title]="'Medals per Country'"
+    subtitle="Explore Olympic medal totals across participating countries."
+    [statistics]="statistics"
+    [isLoading]="isLoading"
+  ></app-header>
+
+  <section class="chart-section" aria-labelledby="medal-chart-title">
+    <h2 id="medal-chart-title">Medal table</h2>
+    <p class="section-description">Total medals earned across all Olympic editions.</p>
+
+    <div class="status" *ngIf="isLoading" role="status" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <span>Loading Olympic data…</span>
+    </div>
+
+    <div class="message error" *ngIf="!isLoading && error" role="alert">
+      <p>{{ error }}</p>
+      <button type="button" (click)="loadData()">Retry</button>
+    </div>
+
+    <p class="message empty" *ngIf="!isLoading && !error && isEmpty" role="status">
+      No Olympic data is available.
+    </p>
+
+    <app-medal-pie-chart
+      *ngIf="!isLoading && !error && !isEmpty"
+      [countryIds]="countryIds"
+      [countries]="countries"
+      [medalTotals]="medalTotals"
+      (countrySelected)="openCountry($event)"
+    ></app-medal-pie-chart>
+  </section>
 </main>

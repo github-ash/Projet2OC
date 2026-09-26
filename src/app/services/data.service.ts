@@ -15,9 +15,9 @@ export class DataService {
     return this.http.get<OlympicCountry[]>(this.olympicDataUrl);
   }
 
-  getCountryByName(countryName: string): Observable<OlympicCountry | undefined> {
+  getCountryById(id: number): Observable<OlympicCountry | undefined> {
     return this.getOlympicData().pipe(
-      map((countries) => countries.find(({ country }) => country === countryName)),
+      map((countries) => countries.find((country) => country.id === id)),
     );
   }
 }

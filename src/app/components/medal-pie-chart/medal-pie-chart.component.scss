@@ -1,4 +1,63 @@
 .chart-container {
+  display: block;
   width: min(100%, 900px);
   margin: 0 auto;
+}
+
+figcaption {
+  margin-top: 12px;
+  color: #586a6c;
+  font-size: 13px;
+  text-align: center;
+}
+
+.country-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 8px 12px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.country-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: #153a40;
+  text-align: left;
+  text-decoration: none;
+}
+
+.country-link:hover {
+  border-color: #d2e1df;
+  background: #fff;
+}
+
+.swatch {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+  border-radius: 2px;
+}
+
+.country-name {
+  flex: 1;
+}
+
+.medal-total {
+  color: #586a6c;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 767px) {
+  .country-list {
+    grid-template-columns: 1fr;
+  }
 }

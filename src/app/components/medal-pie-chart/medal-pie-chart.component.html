@@ -1,3 +1,22 @@
-<div class="chart-container">
-  <canvas #chartCanvas aria-label="Olympic medals by country" role="img"></canvas>
-</div>
+<figure class="chart-container">
+  <canvas
+    #chartCanvas
+    [attr.aria-label]="'Medal totals by country. ' + textualSummary"
+    role="img"
+  ></canvas>
+  <figcaption>Medal totals by country. Select a country to view its Olympic history.</figcaption>
+
+  <ul class="country-list" aria-label="Select a country for details">
+    <li *ngFor="let country of countries; let index = index">
+      <a
+        class="country-link"
+        [routerLink]="['/country', countryIds[index]]"
+        [attr.aria-label]="country + ': ' + (medalTotals[index] | number) + ' medals. View country details.'"
+      >
+        <span class="swatch" [style.backgroundColor]="chartColors[index % chartColors.length]" aria-hidden="true"></span>
+        <span class="country-name">{{ country }}</span>
+        <span class="medal-total">{{ medalTotals[index] | number }}</span>
+      </a>
+    </li>
+  </ul>
+</figure>

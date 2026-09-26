@@ -1,3 +1,8 @@
-<div class="chart-container">
-  <canvas #chartCanvas aria-label="Olympic medals by year" role="img"></canvas>
-</div>
+<figure class="chart-container">
+  <canvas
+    #chartCanvas
+    [attr.aria-label]="'Medals won by year. ' + textualSummary"
+    role="img"
+  ></canvas>
+  <figcaption>Medals earned at each Olympic edition.</figcaption>
+</figure>

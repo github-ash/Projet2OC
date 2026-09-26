@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, of, switchMap } from 'rxjs';
 import { Statistic } from '../../models/statistic.model';
 import { DataService } from '../../services/data.service';
@@ -15,6 +16,9 @@ export class CountryComponent implements OnInit {
   years: number[] = [];
   medalTotals: number[] = [];
   error: string | null = null;
+  isLoading = true;
+  isEmpty = false;
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -24,24 +28,30 @@ export class CountryComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
-      map((params) => params.get('countryName')),
-      switchMap((countryName) => countryName
-        ? this.dataService.getCountryByName(countryName)
-        : of(undefined)),
+      map((params) => params.get('id')),
+      switchMap((id) => {
+        const countryId = Number(id);
+        return id && Number.isInteger(countryId) && countryId > 0
+          ? this.dataService.getCountryById(countryId)
+          : of(undefined);
+      }),
+      takeUntilDestroyed(this.destroyRef),
     ).subscribe({
       next: (country) => {
+        this.isLoading = false;
         if (!country) {
           this.router.navigate(['/not-found']);
           return;
         }
 
         this.titlePage = country.country;
-        this.years = country.participations.map(({ year }) => year);
-        this.medalTotals = country.participations.map(({ medalsCount }) => medalsCount);
+        const participations = Array.isArray(country.participations) ? country.participations : [];
+        this.years = participations.map(({ year }) => year);
+        this.medalTotals = participations.map(({ medalsCount }) => medalsCount);
         this.statistics = [
           {
             label: 'Number of entries',
-            value: country.participations.length,
+            value: participations.length,
           },
           {
             label: 'Total Number of medals',
@@ -49,12 +59,14 @@ export class CountryComponent implements OnInit {
           },
           {
             label: 'Total Number of athletes',
-            value: country.participations.reduce((total, participation) => total + participation.athleteCount, 0),
+            value: participations.reduce((total, participation) => total + participation.athleteCount, 0),
           },
         ];
+        this.isEmpty = participations.length === 0;
       },
-      error: (error: Error) => {
-        this.error = error.message;
+      error: () => {
+        this.isLoading = false;
+        this.error = 'Country data could not be loaded. Return to the dashboard and try again.';
       },
     });
   }

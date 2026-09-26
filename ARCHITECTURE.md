@@ -5,9 +5,9 @@
 ```text
 src/app/
   components/
+    header/                    # Titre de page et indicateurs réutilisables
     country-medal-chart/       # Courbe des médailles par année
     medal-pie-chart/           # Répartition par pays et sélection d'un pays
-    statistics-summary/        # Affichage partagé des indicateurs
   models/                      # Types des pays, participations et indicateurs
   pages/
     home/                      # Tableau de bord
@@ -19,9 +19,11 @@ src/app/
 
 ## Responsabilités et données
 
-Les composants de `pages/` orchestrent l'affichage, les indicateurs et la navigation. Les composants de `components/` sont dédiés à une présentation précise; les composants Chart.js détruisent leur instance à leur destruction ou avant de la recréer.
+Les composants de `pages/` orchestrent le chargement, les indicateurs et la navigation. `HeaderComponent` reçoit un titre et une liste d'indicateurs, et est partagé par le tableau de bord et le détail. Les graphiques reçoivent leurs données par inputs; la sélection d'un pays émet son ID au tableau de bord. Les composants Chart.js détruisent leur instance avant de la recréer et à leur destruction.
 
-`DataService`, déclaré avec `providedIn: 'root'`, est le point d'accès unique aux données olympiques. Il expose des `Observable` typés; les pages ne lisent pas directement le fichier JSON. Les interfaces dans `models/` décrivent les pays et leurs participations.
+`DataService`, déclaré avec `providedIn: 'root'`, est le point d'accès unique aux données olympiques. Il expose des `Observable` typés et recherche un pays par ID; les pages ne lisent pas directement le fichier JSON. Les interfaces dans `models/` décrivent les pays, leurs participations et les indicateurs.
+
+Les routes sont `/` et `/country/:id`. Les composants de page présentent des états de chargement, de données absentes et d'erreur; les abonnements suivent le cycle de vie Angular avec `takeUntilDestroyed`.
 
 ## Évolution vers une API
 

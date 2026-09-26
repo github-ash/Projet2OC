@@ -1,7 +1,34 @@
-<main>
-  <div class="center"><div>{{ titlePage }}</div></div>
-  <p class="error" *ngIf="error" role="alert">Unable to load country data: {{ error }}</p>
-  <app-statistics-summary [statistics]="statistics"></app-statistics-summary>
-  <app-country-medal-chart [years]="years" [medalTotals]="medalTotals"></app-country-medal-chart>
-  <div class="center"><a routerLink="">Go back</a></div>
+<main class="page-shell">
+  <app-header
+    [title]="titlePage || 'Country details'"
+    subtitle="Olympic participation and medal history."
+    [statistics]="statistics"
+    [isLoading]="isLoading"
+  ></app-header>
+
+  <section class="chart-section" aria-labelledby="progress-title">
+    <h2 id="progress-title">Medal progression</h2>
+
+    <div class="status" *ngIf="isLoading" role="status" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <span>Loading country data…</span>
+    </div>
+
+    <div class="message error" *ngIf="!isLoading && error" role="alert">
+      <p>{{ error }}</p>
+      <a class="back-link" routerLink="/">Return to dashboard</a>
+    </div>
+
+    <p class="message empty" *ngIf="!isLoading && !error && isEmpty" role="status">
+      No participation data is available for this country.
+    </p>
+
+    <app-country-medal-chart
+      *ngIf="!isLoading && !error && !isEmpty"
+      [years]="years"
+      [medalTotals]="medalTotals"
+    ></app-country-medal-chart>
+  </section>
+
+  <a class="back-link" *ngIf="!error" routerLink="/">Back to dashboard</a>
 </main>

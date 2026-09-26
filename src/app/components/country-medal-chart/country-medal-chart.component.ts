@@ -13,6 +13,12 @@ export class CountryMedalChartComponent implements AfterViewInit, OnChanges, OnD
 
   private chart?: Chart<'line', number[], number>;
 
+  get textualSummary(): string {
+    return this.years
+      .map((year, index) => `${year}: ${this.medalTotals[index] ?? 0} medals`)
+      .join('. ');
+  }
+
   ngAfterViewInit(): void {
     this.renderChart();
   }
@@ -44,6 +50,7 @@ export class CountryMedalChartComponent implements AfterViewInit, OnChanges, OnD
       },
       options: {
         aspectRatio: 2.5,
+        animation: false,
       },
     });
   }

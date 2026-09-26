@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { HeaderComponent } from '../../components/header/header.component';
 import { MedalPieChartComponent } from '../../components/medal-pie-chart/medal-pie-chart.component';
-import { StatisticsSummaryComponent } from '../../components/statistics-summary/statistics-summary.component';
 import { DataService } from '../../services/data.service';
 import { HomeComponent } from './home.component';
 
@@ -17,8 +17,8 @@ describe('HomeComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [
         HomeComponent,
+        HeaderComponent,
         MedalPieChartComponent,
-        StatisticsSummaryComponent,
       ],
       providers: [
         { provide: DataService, useValue: dataService },
@@ -42,5 +42,17 @@ describe('HomeComponent', () => {
       { label: 'Number of countries', value: 0 },
       { label: 'Number of JOs', value: 0 },
     ]);
+    expect(component.isLoading).toBeFalse();
+    expect(component.isEmpty).toBeTrue();
+  });
+
+  it('should show a friendly message when loading fails', () => {
+    dataService.getOlympicData.and.returnValue(throwError(() => new Error('technical failure')));
+
+    component.loadData();
+    fixture.detectChanges();
+
+    expect(component.error).toBe('Olympic data could not be loaded. Please try again.');
+    expect(fixture.nativeElement.textContent).not.toContain('technical failure');
   });
 });

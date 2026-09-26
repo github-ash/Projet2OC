@@ -1,0 +1,17 @@
+<header class="page-header">
+  <div class="heading">
+    <p class="brand">TÉLÉSPORT <span>·</span> OLYMPIC GAMES</p>
+    <h1>{{ title }}</h1>
+    <p class="subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+  </div>
+
+  <dl class="statistics" aria-label="Key statistics">
+    <div class="statistic" *ngFor="let statistic of statistics">
+      <dt>{{ statistic.label }}</dt>
+      <dd>
+        <span class="skeleton" *ngIf="isLoading" aria-label="Loading"></span>
+        <span *ngIf="!isLoading">{{ statistic.value | number }}</span>
+      </dd>
+    </div>
+  </dl>
+</header>

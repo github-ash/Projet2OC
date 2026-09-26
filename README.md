@@ -1,29 +1,80 @@
-# OlympicGamesStarter
+# TéléSport Olympic Games
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.6.
+Application Angular de consultation des médailles olympiques par pays. Le tableau de bord présente les totaux et permet d’ouvrir le détail d’un pays; la page détail présente ses indicateurs et l’évolution de ses médailles par édition.
 
-Don't forget to install your node_modules before starting (`npm install`).
+## Sommaire
 
-## Development server
+- [Prérequis](#prérequis)
+- [Installation et lancement](#installation-et-lancement)
+- [Pages](#pages)
+- [Structure](#structure)
+- [Données et décisions techniques](#données-et-décisions-techniques)
+- [Captures](#captures)
+- [Vérifications](#vérifications)
+- [Limites](#limites)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Prérequis
 
-## Build
+- Node.js 18.19+, 20.11+ ou 22+
+- npm
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Le projet utilise Angular 18. L’Angular CLI global n’est pas nécessaire; les scripts npm utilisent la version locale du projet.
 
-## Where to start
+## Installation et lancement
 
-As you can see, an architecture has already been defined for the project. It is just a suggestion, you can choose to use your own. The predefined architecture includes (in addition to the default angular architecture) the following:
+```bash
+npm install
+npm start
+```
 
-- `components` folder: contains every reusable components
-- `pages` folder: contains components used for routing
-- `core` folder: contains the business logic (`services` and `models` folders)
+Ouvrir [http://localhost:4200](http://localhost:4200). Pour compiler une version de production :
 
-I suggest you to start by understanding this starter code. Pay an extra attention to the `app-routing.module.ts` and the `olympic.service.ts`.
+```bash
+npm run build
+```
 
-Once mastered, you should continue by creating the typescript interfaces inside the `models` folder. As you can see I already created two files corresponding to the data included inside the `olympic.json`. With your interfaces, improve the code by replacing every `any` by the corresponding interface.
+Les tests se lancent avec `npm test`. Pour les exécuter en mode headless, une installation de Chrome compatible avec Karma est requise :
 
-You're now ready to implement the requested features.
+```bash
+npm test -- --watch=false --browsers=ChromeHeadless
+```
 
-Good luck!
+## Pages
+
+- `/` : indicateurs globaux et graphique interactif des médailles par pays.
+- `/country/:id` : participations, médailles, athlètes et évolution pour le pays correspondant à l’ID numérique.
+- Une route ou un ID inconnu affiche la page `not-found`.
+
+Les pages affichent également les états de chargement, de données absentes et d’erreur. Sur le tableau de bord, le chargement peut être relancé; la page détail propose un retour au tableau de bord.
+
+## Structure
+
+```text
+src/app/
+	components/       # Header réutilisable et graphiques Chart.js
+	models/           # Interfaces pays, participation et indicateurs
+	pages/            # Pages associées aux routes
+	services/         # Accès centralisé aux données
+src/assets/mock/    # Jeu de données olympiques simulé
+```
+
+Voir [ARCHITECTURE.md](ARCHITECTURE.md) pour les responsabilités des composants et du service.
+
+## Données et décisions techniques
+
+`DataService` lit `assets/mock/olympic.json` et expose des `Observable` typés. Les pages utilisent les IDs des pays dans les routes et agrègent leurs indicateurs; les composants Chart.js se limitent à afficher les données et sont détruits avec leur composant Angular. `takeUntilDestroyed` gère les abonnements de page.
+
+## Captures
+
+Les captures desktop du tableau de bord et du détail Italie sont disponibles dans `captures-ui/` et regroupées dans `captures-ui.zip`.
+
+## Vérifications
+
+- `npm run build`
+- Parcours manuel : tableau de bord, clic sur un pays, retour, ID inconnu.
+- Mise en page responsive et navigation clavier.
+
+## Limites
+
+- Les données sont statiques; aucune API distante ni persistance n’est configurée.
+- Un pays sans participations affiche un état vide.

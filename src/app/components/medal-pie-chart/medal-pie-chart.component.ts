@@ -1,18 +1,28 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import Chart from 'chart.js/auto';
 
+const CHART_COLORS = ['#0b868f', '#df714b', '#5979b8', '#8f6263', '#8b9f55', '#94819d'];
+
 @Component({
   selector: 'app-medal-pie-chart',
   templateUrl: './medal-pie-chart.component.html',
   styleUrls: ['./medal-pie-chart.component.scss'],
 })
 export class MedalPieChartComponent implements AfterViewInit, OnChanges, OnDestroy {
+  readonly chartColors = CHART_COLORS;
+  @Input() countryIds: number[] = [];
   @Input() countries: string[] = [];
   @Input() medalTotals: number[] = [];
-  @Output() countrySelected = new EventEmitter<string>();
+  @Output() countrySelected = new EventEmitter<number>();
   @ViewChild('chartCanvas') private chartCanvas?: ElementRef<HTMLCanvasElement>;
 
   private chart?: Chart<'pie', number[], string>;
+
+  get textualSummary(): string {
+    return this.countries
+      .map((country, index) => `${country}: ${this.medalTotals[index] ?? 0} medals`)
+      .join('. ');
+  }
 
   ngAfterViewInit(): void {
     this.renderChart();
@@ -39,19 +49,34 @@ export class MedalPieChartComponent implements AfterViewInit, OnChanges, OnDestr
         datasets: [{
           label: 'Medals',
           data: this.medalTotals,
-          backgroundColor: ['#0b868f', '#adc3de', '#7a3c53', '#8f6263', 'orange', '#94819d'],
+          backgroundColor: this.chartColors,
           hoverOffset: 4,
         }],
       },
       options: {
         aspectRatio: 2.5,
-        onClick: (_event, elements) => {
-          const country = this.countries[elements[0]?.index ?? -1];
-          if (country) {
-            this.countrySelected.emit(country);
+        animation: false,
+        onClick: (event) => {
+          if (!event.native) {
+            return;
           }
+
+          const points = this.chart?.getElementsAtEventForMode(
+            event.native,
+            'point',
+            { intersect: true },
+            true,
+          ) ?? [];
+          this.selectCountry(points[0]?.index ?? -1);
         },
       },
     });
+  }
+
+  selectCountry(index: number): void {
+    const countryId = this.countryIds[index];
+    if (countryId !== undefined) {
+      this.countrySelected.emit(countryId);
+    }
   }
 }

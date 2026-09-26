@@ -7,8 +7,8 @@ import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { CountryComponent } from "./pages/country/country.component";
 import { CountryMedalChartComponent } from './components/country-medal-chart/country-medal-chart.component';
+import { HeaderComponent } from './components/header/header.component';
 import { MedalPieChartComponent } from './components/medal-pie-chart/medal-pie-chart.component';
-import { StatisticsSummaryComponent } from './components/statistics-summary/statistics-summary.component';
 
 @NgModule({
   declarations: [
@@ -17,8 +17,8 @@ import { StatisticsSummaryComponent } from './components/statistics-summary/stat
     NotFoundComponent,
     CountryComponent,
     CountryMedalChartComponent,
+    HeaderComponent,
     MedalPieChartComponent,
-    StatisticsSummaryComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideHttpClient()],
