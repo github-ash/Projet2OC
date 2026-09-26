@@ -4,14 +4,29 @@
 
 Les constats ci-dessous portent sur le starter code avant refactorisation. Les fichiers cités permettent de retrouver les exemples observés.
 
-| Priorité | Catégorie | Constat et preuve |
-| --- | --- | --- |
-| Haute | Responsabilités | `src/app/pages/home/home.component.ts` et `country/country.component.ts` appelaient directement `HttpClient`; les pages connaissaient l'URL du JSON. |
-| Haute | Typage | Les réponses et agrégations utilisaient `any` dans les deux pages, empêchant la vérification des propriétés. |
-| Haute | Flux de données | Le nom du pays était lu dans un abonnement distinct du chargement des données; l'ordre asynchrone pouvait laisser le pays indéfini. |
-| Moyenne | Responsabilités | Les pages calculaient les statistiques et géraient directement Chart.js au lieu de déléguer l'affichage à des composants. |
-| Moyenne | Erreurs | Les erreurs n'étaient pas présentées de façon cohérente à l'utilisateur et pouvaient exposer les détails techniques. |
-| Basse | Tests | Les tests générés étaient minimaux et le test racine attendait un ancien titre qui n'existait plus dans `AppComponent`. |
+**Priorité haute - responsabilités :** les pages effectuaient elles-mêmes les requêtes HTTP et connaissaient le chemin du JSON.
+
+**Preuves :** `src/app/pages/home/home.component.ts` (`ngOnInit`) et `src/app/pages/country/country.component.ts` (`ngOnInit`).
+
+**Priorité haute - typage :** les réponses et les traitements de données utilisaient `any`, empêchant TypeScript de vérifier les propriétés.
+
+**Preuves :** `src/app/pages/home/home.component.ts` et `src/app/pages/country/country.component.ts` (appels `http.get<any[]>`, puis accès aux champs des pays et participations).
+
+**Priorité haute - flux de données :** le paramètre de route du pays était lu dans un abonnement séparé de la requête HTTP. Le nom pouvait donc ne pas être défini au moment où les données étaient traitées.
+
+**Preuve :** `src/app/pages/country/country.component.ts` (`ngOnInit`, abonnement à `route.paramMap` puis abonnement HTTP distinct).
+
+**Priorité moyenne - responsabilités :** les pages calculaient les statistiques et construisaient directement les graphiques Chart.js au lieu de déléguer leur affichage.
+
+**Preuves :** `src/app/pages/home/home.component.ts` (`buildPieChart`) et `src/app/pages/country/country.component.ts` (`buildChart`).
+
+**Priorité moyenne - gestion des erreurs :** les erreurs étaient envoyées à la console ou conservées dans une propriété, mais elles n'étaient pas présentées clairement dans les pages.
+
+**Preuves :** les callbacks d'erreur dans `src/app/pages/home/home.component.ts` et `src/app/pages/country/country.component.ts`; les templates `src/app/pages/home/home.component.html` et `src/app/pages/country/country.component.html` n'affichaient pas ces erreurs.
+
+**Priorité basse - tests :** les tests générés étaient minimaux et le test racine attendait encore un titre et un contenu qui n'existaient plus dans le composant racine.
+
+**Preuves :** `src/app/app.component.spec.ts` (attentes sur `title` et l'ancien template) et `src/app/app.component.ts` (composant racine sans cette propriété).
 
 ## Structure retenue
 
